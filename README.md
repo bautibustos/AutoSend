@@ -1,5 +1,6 @@
 # AutoSend
  Script automatizado para enviar whatsapp de forma masiva.
+ 
 # Instalar requerimientos.
 pip install -r requerimientos.txt
 

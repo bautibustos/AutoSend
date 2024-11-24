@@ -6,7 +6,10 @@ import Modulos.CopyImg as CopyImg
 Problemas a revisar:
     - Detectar que el numero de telefono puede dar error
     - Imagen suele salir rallada o una linea de mala carga
-
+Pendientes:
+    - Levantar exel, leer de una columna presisa
+    - revisar formato de los numeros
+    - hacer que envie al listado de personas.
 """
 
 def AddImagen():
