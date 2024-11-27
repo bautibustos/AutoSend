@@ -1,0 +1,12 @@
+[theme]
+#color primario, detalles
+primaryColor = "#f9bc60" 
+
+#color para el texto
+textColor = "#fffffe"
+
+# Color de fondo principal
+backgroundColor = "#001e1d"
+
+# Fondo para widgets
+secondaryBackgroundColor = "#058075"

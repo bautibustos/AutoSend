@@ -22,15 +22,18 @@ def AddImagen(nombre_imagen):
     except Exception as e:
         print("Error al copiar la imagen: ",e)
 
-def Send(flag_mensaje = bool,mensaje = str,
-         imagen = False, nombre_imagen = str,
+def Send(mensaje = None,
+         imagen = None, imagen_texto = None,
          nombre_archivo = str):
     #ubicacion del exel
     path_file =  f"{path}\\{nombre_archivo}"
     #guardamos numeros de telefono
     numeros_de_telefono = LE.LevantarNumeros(path_file)
-    # Nombre de las personas    
-    nombre = LE.LevantarNombres(path_file)
+
+    #para que se ejecute el levantar personas, se deben cumplir las condiciones que se encuentren essos textos y que no sean nulos
+    if (mensaje is not None and "USUARIO" in mensaje) or (imagen_texto is not None and "USUARIO" in imagen_texto):
+        # Nombre de las personas    
+        nombre = LE.LevantarNombres(path_file)
 
     # busca la existencia del proceso
     hwnd = win32gui.FindWindow(None, "WhatsApp")
@@ -38,16 +41,16 @@ def Send(flag_mensaje = bool,mensaje = str,
     win32gui.ShowWindow(hwnd, win32con.SW_RESTORE) 
 
     # la forza a ponerse en primer plano
-    # win32gui.SetForegroundWindow(hwnd)#esta linea por algun motivo no fuerza a whatsapp y da error.
-
+    # win32gui.SetForegroundWindow(hwnd) #esta linea por algun motivo no fuerza a whatsapp y da error.
 
     #si hay que cargar imagen se copia para despues ser pegada
-    if imagen:
+    if imagen != None:
         #llama a la funcion de la imagen
-        AddImagen(nombre_imagen)
+        AddImagen(imagen)
 
     contador_nombre = 0
     mensaje_edit = mensaje
+    imagen_edit = imagen_texto
     for numero in numeros_de_telefono:
         #abre Whatsapp desktop dentro del chat del numero y utilizando el texto enviado
         webbrowser.open(f'whatsapp://send?phone=+{numero}')#&text={text}
@@ -56,29 +59,29 @@ def Send(flag_mensaje = bool,mensaje = str,
         time.sleep(random.choice([1.5, 1.4, 1.6]))
 
         #Revisar si hay que enviar imagen
-        if imagen:       
+        if imagen != None:       
             # pega la imagen
             pyautogui.hotkey("ctrl","v")
             time.sleep(random.choice([1.5, 1.4, 1.6]))
+            if imagen_texto != None:
+                imagen_edit = imagen_texto.replace("USUARIO", nombre[contador_nombre])
+                pyautogui.write(imagen_edit)
 
-        if flag_mensaje:
+        if mensaje != None:
         # Escribir mensaje
             mensaje_edit =  mensaje.replace("USUARIO", nombre[contador_nombre])
             
-            #contador para recorrer
-            contador_nombre = contador_nombre + 1
-
             #escribo el mensaje manualmente
             pyautogui.write(mensaje_edit)
+        
+        #contador para recorrer
+        contador_nombre = contador_nombre + 1
 
         time.sleep(random.choice([0.3, 0.2, 0,4]))
         #enviar mensaje
         pyautogui.press("enter")
         time.sleep(random.choice([1.5, 1.4, 1.3]))
         
-
-
-
 
 if __name__ == "__main__":
     Send(mensaje="USUARIO saludos",
