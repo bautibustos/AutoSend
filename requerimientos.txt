@@ -2,3 +2,5 @@ pillow
 pywin32
 PyAutoGUI
 streamlit
+openpyxl
+pandas

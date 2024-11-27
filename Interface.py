@@ -1,7 +1,8 @@
 import streamlit as st
-from pathlib import Path
 import SendMsg
 
+nombre_imagen = str
+nombre_archivo = str
 #titulo
 st.header('Auto Enviar WhatsApps')
 
@@ -9,16 +10,17 @@ st.header('Auto Enviar WhatsApps')
 TextoMensaje = st.text_input('Mensaje a enviar')
 
 #guardar el estado de la imagen
-EstadoImagen = st.checkbox('Imagen')
+estado_imagen = st.checkbox('Imagen')
 
 #si esta checkeado entra a generar el boton para cargarla
-if EstadoImagen:
-    imagen = st.file_uploader('Cargar imagen (opcional)', type=['png','jpg'])
-    if imagen is not None:# si no esta vacio el archivo lo descargo y guardo
-        #                           con path (var.name).suffix rescata la extension
-        with open(f"Files\\ImgLoaded{Path(imagen.name).suffix}","wb") as f:
-            #se escribe y guarda el archivo
-            f.write(imagen.read()) 
+
+imagen = st.file_uploader('Cargar imagen (opcional)', type=['png','jpg'])
+if imagen is not None:# si no esta vacio el archivo lo descargo y guardo
+    #                           con path (var.name).suffix rescata la extension
+    with open(f"Files\\{imagen.name}","wb") as f:
+        #se escribe y guarda el archivo
+        f.write(imagen.read()) 
+        nombre_imagen = imagen.name
 
 # titulo
 st.header('Exel de numeros de telefonos')
@@ -27,14 +29,21 @@ st.header('Exel de numeros de telefonos')
 exel = st.file_uploader('Cargar exel', type='xlsx')
 if exel is not None:# si no esta vacio el archivo lo descargo y guardo
     #                              con path (var.name).suffix rescata la extension
-    with open(f"Files\\FileLoaded{Path(exel.name).suffix}","wb") as f:
+    with open(f"Files\\{exel.name}","wb") as f:
         #se escribe y guarda el archivo
         f.write(exel.read())
+        nombre_archivo = exel.name
 
 # CallBack para evitar que la funcion se llame de forma incorrecta
 def enviar():
+    nombre_imagen = str
     #llamo a la funcion para que envie el mensaje
-    SendMsg.Send(mensaje=TextoMensaje, imagen=EstadoImagen)
+    SendMsg.Send(
+                mensaje=TextoMensaje, 
+                imagen=estado_imagen,
+                nombre_imagen = nombre_imagen,
+                nombre_archivo = nombre_archivo
+                )
 
 #boton para empezar a mandar el mensaje
 st.button('Empezar',on_click=enviar)
