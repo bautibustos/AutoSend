@@ -6,12 +6,10 @@ st.set_page_config(page_title="Auto Send")
 #titulo
 st.header(f'Auto Enviar WhatsApps')
 
-
 #entry para el mensaje
 mensaje = st.text_area('Mensaje a enviar',height = 80, value = None)
 
-#si esta checkeado entra a generar el boton para cargarla
-
+# Creo la carga de la imagen y los tipos aceptados
 imagen = st.file_uploader('Cargar imagen', type=['png','jpg'])
 if imagen is not None:# si no esta vacio el archivo lo descargo y guardo
     #                           con path (var.name).suffix rescata la extension
@@ -45,10 +43,10 @@ def enviar():
                 imagen = nombre_imagen,
                 imagen_texto = imagen_texto,
                 nombre_archivo = nombre_archivo
-                )
+    )
 
 #boton para empezar a mandar el mensaje
 if exel is not None and (imagen is not None or mensaje is not None):
     Bt_Empezar = st.button('Empezar',on_click=enviar, disabled = False)
 else:
-    Bt_Empezar = st.button('Empezar',on_click=enviar, disabled = True)
+    Bt_Empezar = st.button('Empezar', disabled = True)

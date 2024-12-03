@@ -1,3 +1,7 @@
+[client]
+# sacar para que los usuarios no vean los errores
+showErrorDetails = false
+
 [theme]
 #color primario, detalles
 primaryColor = "#f9bc60" 
