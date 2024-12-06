@@ -1,6 +1,7 @@
 import streamlit as st
 import SendMsg
 
+#nombre de la pagina
 st.set_page_config(page_title="Auto Send")
 
 #titulo
@@ -17,6 +18,7 @@ if imagen is not None:# si no esta vacio el archivo lo descargo y guardo
         #se escribe y guarda el archivo
         f.write(imagen.read())
 
+# area del texto
 imagen_texto =  st.text_area("Pie de la imagen", height = 69, value = None)
 
 # titulo
@@ -25,7 +27,6 @@ st.header('Exel de numeros de telefonos')
 #guardo el exel y pido que solamente cargen los xlsx
 exel = st.file_uploader('Cargar exel', type='xlsx')
 if exel is not None:# si no esta vacio el archivo lo descargo y guardo
-    #                              con path (var.name).suffix rescata la extension
     with open(f"Files\\{exel.name}","wb") as f:
         #se escribe y guarda el archivo
         f.write(exel.read())

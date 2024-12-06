@@ -5,9 +5,8 @@ from openpyxl.styles import PatternFill
 def LevantarNumeros(ruta):
     # Ruta del archivo (puede ser un CSV o un Excel)
     with pd.ExcelFile(ruta) as xls:
-
     # Leer el archivo (ajusta el método si es Excel)
-        df = pd.read_excel(ruta)  # Usa pd.read_excel() si es un archivo .xlsx
+        df = pd.read_excel(xls)  # Usa pd.read_excel() si es un archivo .xlsx
     try:
         return df["Telefono"]
     except:
@@ -26,16 +25,12 @@ def LevantarNombres(ruta):
         return False
 
 #pintar numeros ya usados
-from openpyxl import load_workbook
-from openpyxl.styles import PatternFill
-
 def PintarUsados(ruta, nombre_columna, numero_telefono):
     color = "FFFF00"  # color amarillo
-
     # Cargar el archivo y la hoja activa
     wb = load_workbook(ruta)
     ws = wb.active  # Utiliza la hoja activa del archivo
-
+    numero_telefono = numero_telefono.replace("+", "")
     # Obtener la columna por nombre
     for col in ws.iter_cols(1, ws.max_column):
         if col[0].value == nombre_columna:

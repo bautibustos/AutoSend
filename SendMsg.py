@@ -1,12 +1,12 @@
 import webbrowser,time, os, pyautogui, random
 import Modulos.CopyImg as CopyImg
 import Modulos.ManejoExel as LE
-import win32gui, win32con, Modulos.utils as utils, threading
+import win32gui, win32con, Modulos.utils as utils    
 #from Interface import ErrorCarga
 """
 Problemas a revisar:
     - Detectar que el numero de telefono puede dar error
-    - Imagen suele salir rallada o una linea de mala carga
+
 Pendientes:
     - revisar formato de los numeros
 """
@@ -34,14 +34,7 @@ def Send(mensaje = None,
     
     else:#si la columna esta
         # esta funcion retorna una lista y bool y selecciono el bool para saber si hay pintados
-        flag_celda = LE.CeldaPintada(ruta=path_file, nombre_columna= "Telefono")
-        if  flag_celda[0] is False:
-            #guardo los numeros desde 0
-            numeros_de_telefono = LE.LevantarNumeros(path_file)
-        else:
-            #si no guardo los numeros que no esten pintados
-            numeros_de_telefono = LE.CeldaPintada(ruta=path, nombre_columna= "Telefono")[1]
-
+        numeros_de_telefono = LE.LevantarNumeros(path_file)
 
     #para que se ejecute el levantar personas, se deben cumplir las condiciones que se encuentren essos textos y que no sean nulos
     if (mensaje is not None and "USUARIO" in mensaje) or (imagen_texto is not None and "USUARIO" in imagen_texto):
@@ -51,6 +44,7 @@ def Send(mensaje = None,
             flag_nombre = True
         else:
             utils.ErrorCarga(error_mensaje='Columna "Nombre" no encontrada')
+             
     else:
         flag_nombre = False
 
@@ -72,61 +66,94 @@ def Send(mensaje = None,
     imagen_edit = imagen_texto
     # agregar el check si es es falso
     for numero in numeros_de_telefono:
-        #abre Whatsapp desktop dentro del chat del numero y utilizando el texto enviado
-        webbrowser.open(f'whatsapp://send?phone={numero}')#&text={text}
+        
+        try:
+            numero= int(numero)#intenta volverlo entero pasa sacar decimales
+        except:
+            pass
+        
+        # si numero no esta vacio
+        if str(numero) != "nan":# convierte el numero en str para encontrar el nan
+            item = str(numero)#lo convierto enstr
+            if not "+54" in item:#me fijo tiene el mas +54
+                #comparo si los primeros dos items son 54
+                if not "54" in item[:2]:
+                    item = "54"+item#agro el 54 si no lo tiene
+                if not "+" in item:# pregunto si tengo el +
+                    item = "+"+item# agrego el + si no esta
+            #elimino guiones de por medio
+            if "-" in item:
+                item.replace('-','')
+            #elimino espacios si hay
+            if " " in item:
+                item.replace(' ','')
+            # limpiar parentesis
+            if "(" in item:
+                item.replace('(', '')
+            # limpiar parentesis
+            if ')' in item:
+                item.replace(')', '')
 
-        #espera para darle tiempo a abrir el chat
-        time.sleep(random.choice([1.5, 1.4, 1.6]))
+            numero = item # reemplazo el valor nuevo
+            
+            #abre Whatsapp desktop dentro del chat del numero y utilizando el texto enviado
+            webbrowser.open(f'whatsapp://send?phone={numero}')#&text={text}
 
-        #Revisar si hay que enviar imagen
-        if imagen != None:       
-            # pega la imagen
-            pyautogui.hotkey("ctrl","v")
-            # tiempo de espera en lo que carga la imagen
-            time.sleep(random.choice([1.5, 1.4, 1.6]))
+            #espera para darle tiempo a abrir el chat
+            time.sleep(random.choice([2.7, 2.8, 2.9]))
 
-            # Si el texto de la imagen no esta vacio lo escribe
-            if imagen_texto != None:
-                #si es True es xq hay nombre y lo remplaza por el valor de la lista
+            #Revisar si hay que enviar imagen
+            if imagen != None:
+
+                # pega la imagen
+                pyautogui.hotkey("ctrl","v")
+
+                # tiempo de espera en lo que carga la imagen
+                time.sleep(random.choice([2.7, 2.8, 2.9]))
+
+                # Si el texto de la imagen no esta vacio lo escribe
+                if imagen_texto != None:
+                    #si es True es xq hay nombre y lo remplaza por el valor de la lista
+                    try:
+                        if flag_nombre:
+                            imagen_edit = imagen_texto.replace("USUARIO", nombre[contador_nombre])
+                            pyautogui.write(imagen_edit)
+                    except:
+                        pyautogui.write(imagen_edit)
+                
+                #esper antes de enviar la imagen
+                time.sleep(random.choice([2.7, 2.8, 2.9]))
+
+                # enviar mensaje
+                pyautogui.press("enter")
+
+                #espera entre proximo chat y / o mensaje
+                time.sleep(random.choice([0.6, 0.7, 0.8]))
+                
+
+            #detecta que encuentre un mensaje
+            if mensaje != None:
+            # Escribir mensaje
                 try:
-                    if flag_nombre:
-                        imagen_edit = imagen_texto.replace("USUARIO", nombre[contador_nombre])
+                    if flag_nombre:#si es que hay usuario, reemplaza por el valor de la lista
+                        mensaje_edit =  mensaje.replace("USUARIO", nombre[contador_nombre])
                 except:
-                    pyautogui.write(imagen_edit)
+                    mensaje_edit
+                #escribo el mensaje manualmente
+                pyautogui.write(mensaje_edit)
+                #tiempo de espera antes de enviar el mensaje
+                time.sleep(random.choice([2.3, 2.2, 2,4]) )
+                #enviar mensaje
+                pyautogui.press("enter")
             
-            #esper antes de enviar la imagen
-            time.sleep(random.choice([1.4, 1.5, 1.6]))
-            pyautogui.press("enter")
-            #espera entre proximo chat y / o mensaje
-            time.sleep(random.choice([0.6, 0.7, 0.8]))
+            #contador para recorrer
+            contador_nombre +=1
             
+            #espera para abrir proximo chat
+            time.sleep(random.choice([2.5, 2.4, 2.3]))
 
-        #detecta que encuentre un mensaje
-        if mensaje != None:
-        # Escribir mensaje
-            try:
-                if flag_nombre:#si es que hay usuario, reemplaza por el valor de la lista
-                    mensaje_edit =  mensaje.replace("USUARIO", nombre[contador_nombre])
-            except:
-                mensaje_edit
-            #escribo el mensaje manualmente
-            pyautogui.write(mensaje_edit)
-            #tiempo de espera antes de enviar el mensaje
-            time.sleep(random.choice([1.3, 1.2, 1,4]) )
-            #enviar mensaje
-            pyautogui.press("enter")
-        
-        #contador para recorrer
-        contador_nombre = contador_nombre + 1
-        
-        # pintar numero de telefono
-        threading.Thread(target=LE.PintarUsados, args=(path_file, "Telefono", numero)).join
-        #LE.PintarUsados(ruta=path_file, 
-         #               nombre_columna="Telefono",
-          #              numero_telefono=numero)
-        
-        #espera para abrir proximo chat
-        time.sleep(random.choice([1.5, 1.4, 1.3]))
+        else:# suma al contador de nombres para contar la vuelta
+            contador_nombre +=1
         
 
 if __name__ == "__main__":
