@@ -21,8 +21,8 @@ def AddImagen(nombre_imagen):
         print("Error al copiar la imagen: ",e)
 
 def Send(mensaje = None,
-         imagen = None, imagen_texto = None,
-         nombre_archivo = str):
+        imagen = None, imagen_texto = None,
+        nombre_archivo = str):
 
     flag_nombre = bool
     #ubicacion del exel
