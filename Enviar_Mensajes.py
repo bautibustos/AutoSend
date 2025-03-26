@@ -1,6 +1,11 @@
 import streamlit as st
 import SendMsg
 
+import modulos.Checker as checker
+
+checker.check(st=st)
+
+
 #nombre de la pagina
 st.set_page_config(page_title="Auto Send")
 
@@ -8,13 +13,13 @@ st.set_page_config(page_title="Auto Send")
 st.header(f'Auto Enviar WhatsApps')
 
 #entry para el mensaje
-mensaje = st.text_area('Mensaje a enviar',height = 80, value = None)
+mensaje = st.text_area('Mensaje a enviar',height    = 80, value = None)
 
 # Creo la carga de la imagen y los tipos aceptados
 imagen = st.file_uploader('Cargar imagen', type=['png','jpg'])
 if imagen is not None:# si no esta vacio el archivo lo descargo y guardo
     #                           con path (var.name).suffix rescata la extension
-    with open(f"Files\\{imagen.name}","wb") as f:
+    with open(f"files\\{imagen.name}","wb") as f:
         #se escribe y guarda el archivo
         f.write(imagen.read())
 
@@ -27,7 +32,7 @@ st.header('Exel de numeros de telefonos')
 #guardo el exel y pido que solamente cargen los xlsx
 exel = st.file_uploader('Cargar exel', type='xlsx')
 if exel is not None:# si no esta vacio el archivo lo descargo y guardo
-    with open(f"Files\\{exel.name}","wb") as f:
+    with open(f"files\\{exel.name}","wb") as f:
         #se escribe y guarda el archivo
         f.write(exel.read())
         nombre_archivo = exel.name

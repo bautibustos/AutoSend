@@ -4,3 +4,4 @@ PyAutoGUI
 streamlit
 openpyxl
 pandas
+keyboard
