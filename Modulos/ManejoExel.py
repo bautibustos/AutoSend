@@ -8,7 +8,7 @@ def LevantarNumeros(ruta):
     # Leer el archivo (ajusta el método si es Excel)
         df = pd.read_excel(xls)  # Usa pd.read_excel() si es un archivo .xlsx
     try:
-        return df["Telefono"]
+        return df["Telefono"]# agregar tolerancia mayusculas y minusculas
     except:
         return False
 

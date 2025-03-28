@@ -1,6 +1,7 @@
 [client]
 # sacar para que los usuarios no vean los errores
 showErrorDetails = false
+showSidebarNavigation = true
 
 [theme]
 #color primario, detalles

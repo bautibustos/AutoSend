@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-import webbrowser,time, os, pyautogui, random
-import Modulos.CopyImg as CopyImg
-import Modulos.ManejoExel as LE
-import win32gui, win32con, Modulos.utils as utils 
+import webbrowser,time, os, pyautogui, random, keyboard
+import modulos.CopyImg as CopyImg
+import modulos.ManejoExel as LE
+import win32gui, win32con, modulos.utils as utils 
 import json   
 #from Interface import ErrorCarga
 """
@@ -11,11 +11,12 @@ Problemas a revisar:
 
 Pendientes:
     - revisar formato de los numeros
+    - tolerancia a las columnas en mayusculas 
 """
 
 
-#carpeta donde se guarda la imagen
-path = os.getcwd()+"\\Files"
+#carpeta donde se guarda la imagen y archivo exel
+path = os.getcwd()+"\\files"
 
 def CargarJson():
     with open(f"{os.getcwd()}\\config.json", 'r', encoding='utf-8') as archivo:
@@ -28,6 +29,18 @@ def AddImagen(nombre_imagen):
         utils.ErrorCarga(error_mensaje= "Problemas con la imagen")
         #print("Error al copiar la imagen: ",e)
 
+# funcion que detecta los enter y los hace sin enviar el mensaje
+def custom_write(text):
+    for char in text:
+        if char == '\n':  # Si encuentra un salto de línea
+            keyboard.press('shift')
+            keyboard.press_and_release('enter')
+            keyboard.release('shift')
+        elif char.lower() == 'ñ':  # Si encuentra 'ñ' o 'Ñ'
+            keyboard.write(char)  # La escribe normalmente
+        else:
+            keyboard.write(char)
+
 def Send(mensaje = None,
         imagen = None, imagen_texto = None,
         nombre_archivo = str):
@@ -36,6 +49,7 @@ def Send(mensaje = None,
     #ubicacion del exel
     path_file =  f"{path}\\{nombre_archivo}"
     
+    #cargamos la configuracion desde el json
     tiempos = CargarJson()["tiempo"]
     cant_msg = CargarJson()["cantidad_mensajes"]
 
@@ -77,21 +91,17 @@ def Send(mensaje = None,
     imagen_edit = imagen_texto
     # agregar el check si es es falso
     for numero in numeros_de_telefono:
-        
         try:
             numero = int(numero)#intenta volverlo entero pasa sacar decimales
         except:
             pass
-        
-        """
-        agregar para que la cantidad de mensajes la defina en el archivo de config
-        """
+
         # si supera a los 200 mensajes
         if contador_nombre == 195:#aviso de alerta qque se llegaron a los 200 msg
             utils.Warning(warning_mensaje=f" Estas por llegar al limite de 200 mensajes.")
             break
         else:
-            if cant_msg == contador_nombre:
+            if cant_msg == contador_nombre: # este es el limite de mensajes de mensajes configurable
                 break
             else:
                 if str(numero) != "nan":# convierte el numero en str para encontrar el nan
@@ -130,17 +140,16 @@ def Send(mensaje = None,
                         pyautogui.hotkey("ctrl","v")
 
                         # tiempo de espera en lo que carga la imagen
-                        time.sleep(random.choice([2.7, 2.8, 2.9]))
+                        time.sleep(random.choice([3.7, 3.8, 3.9]))
 
                         # Si el texto de la imagen no esta vacio lo escribe
                         if imagen_texto != None:
                             #si es True es xq hay nombre y lo remplaza por el valor de la lista
-                            try:
-                                if flag_nombre:
-                                    imagen_edit = imagen_texto.replace("USUARIO", nombre[contador_nombre])
-                                    pyautogui.write(imagen_edit)
-                            except:
-                                pyautogui.write(imagen_edit)
+                            if flag_nombre:
+                                imagen_edit = imagen_texto.replace("USUARIO", nombre[contador_nombre])
+                                custom_write(imagen_edit)
+                            else:
+                                custom_write(imagen_edit)
                         
                         #esper antes de enviar la imagen
                         time.sleep(random.choice([tiempos+0.7, tiempos+0.8, tiempos+0.9]))
@@ -161,7 +170,7 @@ def Send(mensaje = None,
                         except:
                             mensaje_edit
                         #escribo el mensaje manualmente
-                        pyautogui.write(mensaje_edit)
+                        custom_write(mensaje_edit)
                         #tiempo de espera antes de enviar el mensaje
                         time.sleep(random.choice([0.3+tiempos, tiempos+0.2, tiempos+0.4]) )
                         #enviar mensaje
@@ -171,7 +180,7 @@ def Send(mensaje = None,
                     contador_nombre +=1
                     
                     #espera para abrir proximo chat
-                    time.sleep(random.choice([tiempos+0.5, tiempos+0.4, tiempos+0.3]))
+                    time.sleep(random.choice([3.5, 3.4, 3.3]))
                 else:
                     contador_nombre +=1
         
