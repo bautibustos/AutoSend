@@ -1,4 +1,5 @@
 {
-    "tiempo":2,
-    "cantidad_mensajes": 5
+    "tiempo":6,
+    "cantidad_mensajes": 100,
+    "tiempo_depuracion": 4
 }

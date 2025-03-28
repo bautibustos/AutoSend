@@ -10,7 +10,7 @@ checker.check(st=st)
 st.set_page_config(page_title="Auto Send")
 
 #titulo
-st.header(f'Auto Enviar WhatsApps')
+st.header(f'Auto Enviar WhatsApps', anchor= False)
 
 #entry para el mensaje
 mensaje = st.text_area('Mensaje a enviar',height    = 80, value = None)
@@ -26,16 +26,19 @@ if imagen is not None:# si no esta vacio el archivo lo descargo y guardo
 # area del texto
 imagen_texto =  st.text_area("Pie de la imagen", height = 69, value = None)
 
+
 # titulo
-st.header('Exel de numeros de telefonos')
+st.header('Carga de hoja de calculo con numeros de telefonos', anchor= False)
 
 #guardo el exel y pido que solamente cargen los xlsx
-exel = st.file_uploader('Cargar exel', type='xlsx')
+exel = st.file_uploader('Cargar hoja de calculo', type='xlsx')
 if exel is not None:# si no esta vacio el archivo lo descargo y guardo
     with open(f"files\\{exel.name}","wb") as f:
         #se escribe y guarda el archivo
         f.write(exel.read())
         nombre_archivo = exel.name
+# mensajes desde el exel
+flag_personalizado = st.checkbox(label="Usar mensajes personalizado dentro de la hoja de calculo", value = False)
 
 # CallBack para evitar que la funcion se llame de forma incorrecta
 def enviar():
@@ -48,7 +51,8 @@ def enviar():
                 mensaje = mensaje, 
                 imagen = nombre_imagen,
                 imagen_texto = imagen_texto,
-                nombre_archivo = nombre_archivo
+                nombre_archivo = nombre_archivo,
+                flag_personalizado = flag_personalizado
     )
 
 #boton para empezar a mandar el mensaje

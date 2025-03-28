@@ -4,6 +4,8 @@ showErrorDetails = false
 showSidebarNavigation = true
 
 [theme]
+# https://coolors.co/eaebed-006989-a3bac3-007090-01a7c2
+
 #color primario, detalles
 primaryColor = "#f9bc60" 
 
